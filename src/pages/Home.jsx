@@ -1,16 +1,50 @@
 import { useState } from 'react'
 import ProjectCard from '../components/ProjectCard'
 import FilterBar from '../components/FilterBar'
+import SearchBar from '../components/SearchBar'
 import styles from './Home.module.css'
 
 export default function Home({ projects, featuredCount, categoryCount }) {
   const [filter, setFilter] = useState('All')
+  const [query, setQuery] = useState('')
+
+  // When the user types a new search, reset the category filter to All
+  function handleQueryChange(value) {
+    setQuery(value)
+    if (value) setFilter('All')
+  }
+
+  // When the user picks a filter chip, clear any active search
+  function handleFilterChange(value) {
+    setFilter(value)
+    setQuery('')
+  }
+
+  function handleClearAll() {
+    setQuery('')
+    setFilter('All')
+  }
 
   const filtered = projects.filter((p) => {
-    if (filter === 'All') return true
-    if (filter === 'Featured') return p.featured
-    return p.category === filter
+    // Category / featured filter
+    const passesFilter =
+      filter === 'All' ? true :
+      filter === 'Featured' ? p.featured :
+      p.category === filter
+
+    // Search filter — matches name, category, description, or any tech tag
+    const q = query.toLowerCase().trim()
+    const passesSearch = q === '' || [
+      p.name,
+      p.category,
+      p.desc,
+      ...(p.tech || []),
+    ].some((field) => field?.toLowerCase().includes(q))
+
+    return passesFilter && passesSearch
   })
+
+  const isFiltering = query || filter !== 'All'
 
   return (
     <main>
@@ -42,15 +76,31 @@ export default function Home({ projects, featuredCount, categoryCount }) {
         </div>
       </section>
 
+      {/* Search Bar */}
+      <SearchBar query={query} onQueryChange={handleQueryChange} />
+
       {/* Filter Bar */}
-      <FilterBar activeFilter={filter} onFilterChange={setFilter} />
+      <FilterBar activeFilter={filter} onFilterChange={handleFilterChange} />
+
+      {/* Results count when searching/filtering */}
+      {isFiltering && (
+        <div className={styles.resultsMeta}>
+          <span>
+            {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+            {query && <> for <strong>"{query}"</strong></>}
+          </span>
+          <button className={styles.clearAll} onClick={handleClearAll}>
+            Clear all
+          </button>
+        </div>
+      )}
 
       {/* Projects Grid */}
       {filtered.length === 0 ? (
         <div className={styles.empty}>
-          <p>No projects match this filter.</p>
-          <button className={styles.clearBtn} onClick={() => setFilter('All')}>
-            Clear filter
+          <p>No projects match{query ? ` "${query}"` : ' this filter'}.</p>
+          <button className={styles.clearBtn} onClick={handleClearAll}>
+            Clear search
           </button>
         </div>
       ) : (

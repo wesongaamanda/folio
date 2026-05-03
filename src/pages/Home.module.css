@@ -88,6 +88,40 @@
   letter-spacing: 0.05em;
 }
 
+.resultsMeta {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+}
+
+.resultsMeta strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.clearAll {
+  background: none;
+  border: none;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--rust);
+  letter-spacing: 0.04em;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.clearAll:hover {
+  opacity: 0.7;
+}
+
 .clearBtn {
   background: none;
   border: 1px solid var(--border);
