@@ -1,0 +1,88 @@
+/* ─── Reset & Base ──────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ink: #0f0e0d;
+  --paper: #f5f2ee;
+  --cream: #ede9e3;
+  --rust: #c44b2b;
+  --gold: #d4a843;
+  --muted: #7a7470;
+  --card: #ffffff;
+  --border: #d8d3cc;
+  --danger: #f0c8c8;
+
+  --ff: 'Fraunces', Georgia, serif;
+  --mono: 'DM Mono', monospace;
+
+  --r: 8px;
+  --rx: 16px;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--ff);
+  min-height: 100vh;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* ─── Category Background Colors ───────────────────────────── */
+.bg-design     { background: #e8e4f0; }
+.bg-dev        { background: #e1f0e8; }
+.bg-brand      { background: #f0e8e1; }
+.bg-photo      { background: #e1eaf0; }
+.bg-motion     { background: #f0e1e8; }
+.bg-other      { background: #f0ede1; }
+
+/* ─── Toast ─────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--paper);
+  padding: 12px 28px;
+  border-radius: 999px;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  z-index: 9999;
+  pointer-events: none;
+  animation: fadeUp 0.3s ease;
+  white-space: nowrap;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translate(-50%, 16px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* ─── Responsive Utilities ──────────────────────────────────── */
+@media (max-width: 600px) {
+  :root {
+    --rx: 12px;
+  }
+}

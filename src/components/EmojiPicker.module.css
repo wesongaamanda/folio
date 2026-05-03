@@ -1,0 +1,32 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.opt {
+  border: 1px solid var(--border);
+  background: var(--cream);
+  border-radius: var(--r);
+  padding: 8px;
+  font-size: 1.3rem;
+  text-align: center;
+  transition: all 0.2s;
+  line-height: 1;
+}
+
+.opt:hover {
+  border-color: var(--rust);
+}
+
+.opt.selected {
+  border-color: var(--rust);
+  background: #fff2ef;
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
