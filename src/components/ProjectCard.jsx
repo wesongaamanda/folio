@@ -1,11 +1,18 @@
 import { useNavigate } from 'react-router-dom'
-import { CATEGORY_BG } from '../data/projects'
 import styles from './ProjectCard.module.css'
+
+const CATEGORY_BG = {
+  Design: '#dbeafe',
+  Development: '#dcfce7',
+  Branding: '#f3e8ff',
+  Photography: '#fff7ed',
+  Motion: '#ffe4e6',
+}
 
 export default function ProjectCard({ project }) {
   const navigate = useNavigate()
   const { id, name, category, emoji, desc, year, featured } = project
-  const bgClass = CATEGORY_BG[category] || 'bg-other'
+  const thumbBg = CATEGORY_BG[category] || '#f0f0f0'
 
   return (
     <article
@@ -17,7 +24,7 @@ export default function ProjectCard({ project }) {
       aria-label={`View project: ${name}`}
     >
       {/* Thumbnail */}
-      <div className={`${styles.thumb} ${bgClass}`}>
+      <div className={styles.thumb} style={{ background: thumbBg }}>
         <span className={styles.emoji}>{emoji || '🎨'}</span>
       </div>
 

@@ -1,6 +1,13 @@
 import { useParams, useNavigate } from 'react-router-dom'
-import { CATEGORY_BG } from '../data/projects'
 import styles from './ProjectDetail.module.css'
+
+const CATEGORY_BG = {
+  Design: '#dbeafe',
+  Development: '#dcfce7',
+  Branding: '#f3e8ff',
+  Photography: '#fff7ed',
+  Motion: '#ffe4e6',
+}
 
 export default function ProjectDetail({ projects, deleteProject, showToast }) {
   const { id } = useParams()
@@ -20,7 +27,7 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
   }
 
   const { name, category, emoji, desc, year, featured, tech, link } = project
-  const bgClass = CATEGORY_BG[category] || 'bg-other'
+  const thumbBg = CATEGORY_BG[category] || '#f0f0f0'
 
   function handleDelete() {
     if (window.confirm(`Delete "${name}"? This cannot be undone.`)) {
@@ -36,23 +43,19 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
         ← Back to projects
       </button>
 
-      {/* Thumbnail */}
-      <div className={`${styles.thumb} ${bgClass}`}>
+      <div className={styles.thumb} style={{ background: thumbBg }}>
         <span className={styles.emoji}>{emoji || '🎨'}</span>
       </div>
 
-      {/* Meta badges */}
       <div className={styles.meta}>
         <span className={`${styles.badge} ${styles.category}`}>{category}</span>
         <span className={styles.badge}>{year}</span>
         {featured && <span className={styles.badge}>Featured</span>}
       </div>
 
-      {/* Title & Description */}
       <h1 className={styles.title}>{name}</h1>
       <p className={styles.desc}>{desc}</p>
 
-      {/* Tech Stack */}
       {tech && tech.length > 0 && (
         <div className={styles.section}>
           <p className={styles.sectionLabel}>Tech & Tools</p>
@@ -64,14 +67,12 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
         </div>
       )}
 
-      {/* Actions */}
       <div className={styles.actions}>
-        <a
+        <a>
           href={link || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.liveLink}
-        >
           View Live Project ↗
         </a>
         <button className={styles.deleteBtn} onClick={handleDelete}>

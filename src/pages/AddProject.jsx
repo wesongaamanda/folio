@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import EmojiPicker from '../components/EmojiPicker'
-import { CATEGORIES } from '../data/projects'
 import styles from './AddProject.module.css'
+
+const CATEGORIES = ['Design', 'Development', 'Branding', 'Photography', 'Motion']
 
 const CURRENT_YEAR = new Date().getFullYear()
 

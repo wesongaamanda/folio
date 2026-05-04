@@ -8,14 +8,24 @@ import AddProject from './pages/AddProject'
 import ProjectDetail from './pages/ProjectDetail'
 
 export default function App() {
-  const { projects, addProject, deleteProject, featuredCount, categoryCount } =
+  const { projects, loading, addProject, deleteProject, featuredCount, categoryCount } =
     useProjects()
   const { toast, showToast } = useToast()
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'60vh', fontFamily:'var(--mono)', fontSize:'0.8rem', color:'var(--muted)', letterSpacing:'0.08em' }}>
+          Loading projects…
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
       <Navbar />
-
       <Routes>
         <Route
           path="/"
@@ -29,9 +39,7 @@ export default function App() {
         />
         <Route
           path="/add"
-          element={
-            <AddProject addProject={addProject} showToast={showToast} />
-          }
+          element={<AddProject addProject={addProject} showToast={showToast} />}
         />
         <Route
           path="/project/:id"
@@ -44,7 +52,6 @@ export default function App() {
           }
         />
       </Routes>
-
       {toast && <Toast message={toast} />}
     </>
   )

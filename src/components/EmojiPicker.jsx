@@ -1,5 +1,9 @@
-import { EMOJIS } from '../data/projects'
 import styles from './EmojiPicker.module.css'
+
+const EMOJIS = [
+  '🎨', '💎', '🌿', '🔮', '🎵', '📷', '🎬', '🚀', '⚡', '🔥',
+  '🌊', '🎯', '💡', '🛠️', '📱', '🖥️', '✏️', '📐', '🎭', '🌍',
+]
 
 export default function EmojiPicker({ selected, onSelect }) {
   return (
