@@ -11,7 +11,7 @@ const CATEGORY_BG = {
 
 export default function ProjectCard({ project }) {
   const navigate = useNavigate()
-  const { id, name, category, emoji, desc, year, featured } = project
+  const { id, title, category, emoji, description, year, featured } = project
   const thumbBg = CATEGORY_BG[category] || '#f0f0f0'
 
   return (
@@ -21,7 +21,7 @@ export default function ProjectCard({ project }) {
       role="button"
       tabIndex={0}
       onKeyDown={(e) => e.key === 'Enter' && navigate(`/project/${id}`)}
-      aria-label={`View project: ${name}`}
+      aria-label={`View project: ${title}`}
     >
       {/* Thumbnail */}
       <div className={styles.thumb} style={{ background: thumbBg }}>
@@ -35,8 +35,8 @@ export default function ProjectCard({ project }) {
           {featured && <span className={`${styles.tag} ${styles.featured}`}>Featured</span>}
         </div>
 
-        <h2 className={styles.name}>{name}</h2>
-        <p className={styles.desc}>{desc}</p>
+        <h2 className={styles.name}>{title}</h2>
+        <p className={styles.desc}>{description}</p>
 
         <div className={styles.footer}>
           <span className={styles.year}>{year}</span>

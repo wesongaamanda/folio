@@ -26,11 +26,11 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
     )
   }
 
-  const { name, category, emoji, desc, year, featured, tech, link } = project
+  const { title, category, emoji, description, year, featured, tech, link } = project
   const thumbBg = CATEGORY_BG[category] || '#f0f0f0'
 
   function handleDelete() {
-    if (window.confirm(`Delete "${name}"? This cannot be undone.`)) {
+    if (window.confirm(`Delete "${title}"? This cannot be undone.`)) {
       deleteProject(project.id)
       showToast('Project deleted.')
       navigate('/')
@@ -53,8 +53,8 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
         {featured && <span className={styles.badge}>Featured</span>}
       </div>
 
-      <h1 className={styles.title}>{name}</h1>
-      <p className={styles.desc}>{desc}</p>
+      <h1 className={styles.title}>{title}</h1>
+      <p className={styles.desc}>{description}</p>
 
       {tech && tech.length > 0 && (
         <div className={styles.section}>
@@ -68,11 +68,12 @@ export default function ProjectDetail({ projects, deleteProject, showToast }) {
       )}
 
       <div className={styles.actions}>
-        <a>
+        <a
           href={link || '#'}
           target="_blank"
           rel="noopener noreferrer"
           className={styles.liveLink}
+        >
           View Live Project ↗
         </a>
         <button className={styles.deleteBtn} onClick={handleDelete}>

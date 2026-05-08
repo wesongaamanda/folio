@@ -1,31 +1,27 @@
+import { useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
-import { useProjects } from './hooks/useProjects'
-import { useToast } from './hooks/useToast'
 import Navbar from './components/Navbar'
-import Toast from './components/Toast'
 import Home from './pages/Home'
 import AddProject from './pages/AddProject'
 import ProjectDetail from './pages/ProjectDetail'
+import { useProjects } from './hooks/useProjects'
 
 export default function App() {
-  const { projects, loading, addProject, deleteProject, featuredCount, categoryCount } =
-    useProjects()
-  const { toast, showToast } = useToast()
+  const { projects, categories, addProject, deleteProject } = useProjects()
+  const [toast, setToast] = useState(null)
 
-  if (loading) {
-    return (
-      <>
-        <Navbar />
-        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', height:'60vh', fontFamily:'var(--mono)', fontSize:'0.8rem', color:'var(--muted)', letterSpacing:'0.08em' }}>
-          Loading projects…
-        </div>
-      </>
-    )
+  function showToast(message) {
+    setToast(message)
+    setTimeout(() => setToast(null), 3000)
   }
 
+  const featuredCount = projects.filter((p) => p.featured).length
+  const categoryCount = new Set(projects.map((p) => p.category)).size
+
   return (
-    <>
+    <div style={{ minHeight: '100vh', background: 'var(--paper)' }}>
       <Navbar />
+
       <Routes>
         <Route
           path="/"
@@ -39,7 +35,9 @@ export default function App() {
         />
         <Route
           path="/add"
-          element={<AddProject addProject={addProject} showToast={showToast} />}
+          element={
+            <AddProject addProject={addProject} showToast={showToast} />
+          }
         />
         <Route
           path="/project/:id"
@@ -52,7 +50,8 @@ export default function App() {
           }
         />
       </Routes>
-      {toast && <Toast message={toast} />}
-    </>
+
+      {toast && <div className="toast">{toast}</div>}
+    </div>
   )
 }

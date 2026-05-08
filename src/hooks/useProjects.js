@@ -1,205 +1,131 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 
-const API_URL = 'http://localhost:3001/projects'
+const STORAGE_KEY = 'folio_projects'
 
-const STORAGE_KEY = 'portfolio_projects'
-
-const DEFAULT_PROJECTS = [
+const INITIAL_PROJECTS = [
   {
     id: 1,
-    name: 'Lumina Design System',
+    title: 'Lumina Design System',
+    description: 'A comprehensive design system for enterprise SaaS products, covering typography, color, and 120+ components.',
     category: 'Design',
-    emoji: '💎',
-    desc: 'A comprehensive design system for enterprise SaaS products, covering typography, color tokens, and 120+ production-ready components.',
-    year: '2024',
-    tech: ['Figma', 'Storybook', 'React', 'TypeScript'],
-    link: 'https://example.com',
+    tags: ['Design', 'Featured'],
+    year: 2024,
     featured: true,
+    emoji: '💎',
+    gradient: 'linear-gradient(135deg, #d4cfe8 0%, #c5bfdf 100%)'
   },
   {
     id: 2,
-    name: 'Greenpath App',
+    title: 'Greenpath App',
+    description: 'Full-stack sustainability tracker that helps individuals and teams measure and offset their carbon footprint.',
     category: 'Development',
-    emoji: '🌿',
-    desc: 'Full-stack sustainability tracker that helps individuals and teams measure and offset their carbon footprint in real time.',
-    year: '2024',
-    tech: ['Next.js', 'Supabase', 'Tailwind', 'Python'],
-    link: 'https://example.com',
+    tags: ['Development'],
+    year: 2024,
     featured: false,
+    emoji: '🌿',
+    gradient: 'linear-gradient(135deg, #c8ddd0 0%, #b5cebf 100%)'
   },
   {
     id: 3,
-    name: 'Orbit Brand Identity',
+    title: 'Orbit Brand Identity',
+    description: 'Complete visual identity for a space-tech startup — wordmark, iconography, motion guidelines, and brand voice.',
     category: 'Branding',
-    emoji: '🔮',
-    desc: 'Complete visual identity for a space-tech startup — wordmark, iconography, motion guidelines, and brand voice documentation.',
-    year: '2023',
-    tech: ['Illustrator', 'After Effects', 'Figma'],
-    link: 'https://example.com',
+    tags: ['Branding', 'Featured'],
+    year: 2023,
     featured: true,
+    emoji: '🔮',
+    gradient: 'linear-gradient(135deg, #e8ddd0 0%, #ddd0c0 100%)'
   },
   {
     id: 4,
-    name: 'Wave Music Platform',
+    title: 'Wave Music Platform',
+    description: 'A social music discovery platform with AI-generated playlists and real-time collaborative listening rooms.',
     category: 'Development',
-    emoji: '🎵',
-    desc: 'A social music discovery platform with AI-generated playlists and real-time collaborative listening rooms powered by WebSockets.',
-    year: '2023',
-    tech: ['React', 'Node.js', 'WebSockets', 'Spotify API'],
-    link: 'https://example.com',
+    tags: ['Development'],
+    year: 2023,
     featured: false,
+    emoji: '🎵',
+    gradient: 'linear-gradient(135deg, #c8d8e8 0%, #b5c8dc 100%)'
   },
   {
     id: 5,
-    name: 'Urban Frames',
+    title: 'Urban Frames',
+    description: 'A curated series documenting the interplay of light, architecture, and human movement across five cities.',
     category: 'Photography',
-    emoji: '📷',
-    desc: 'A curated series documenting the interplay of light, architecture, and human movement across five cities over two years.',
-    year: '2022',
-    tech: ['Lightroom', 'Photoshop'],
-    link: 'https://example.com',
+    tags: ['Photography'],
+    year: 2022,
     featured: false,
+    emoji: '📷',
+    gradient: 'linear-gradient(135deg, #e0dcd8 0%, #d0ccc8 100%)'
   },
   {
     id: 6,
-    name: 'Kinetic Motion Reel',
+    title: 'Kinetic Motion Reel',
+    description: 'Showreel of motion graphics and animation work for clients across fintech, healthcare, and consumer brands.',
     category: 'Motion',
-    emoji: '🎬',
-    desc: 'Showreel of motion graphics and animation work for clients across fintech, healthcare, and consumer brands.',
-    year: '2022',
-    tech: ['After Effects', 'Cinema 4D', 'Premiere'],
-    link: 'https://example.com',
+    tags: ['Motion'],
+    year: 2022,
     featured: false,
-  },
+    emoji: '🎬',
+    gradient: 'linear-gradient(135deg, #e8d8dc 0%, #dcc8cc 100%)'
+  }
 ]
 
-// ─── Helpers ────────────────────────────────────────────────
-function isLocalhost() {
-  return (
-    window.location.hostname === 'localhost' ||
-    window.location.hostname === '127.0.0.1'
-  )
+const CATEGORIES = ['All', 'Design', 'Development', 'Branding', 'Photography', 'Motion']
+
+const EMOJI_MAP = {
+  Design: '💎',
+  Development: '⚡',
+  Branding: '🎨',
+  Photography: '📷',
+  Motion: '🎬'
 }
 
-function loadFromStorage() {
+const GRADIENT_MAP = {
+  Design: 'linear-gradient(135deg, #d4cfe8 0%, #c5bfdf 100%)',
+  Development: 'linear-gradient(135deg, #c8d8e8 0%, #b5c8dc 100%)',
+  Branding: 'linear-gradient(135deg, #e8ddd0 0%, #ddd0c0 100%)',
+  Photography: 'linear-gradient(135deg, #e0dcd8 0%, #d0ccc8 100%)',
+  Motion: 'linear-gradient(135deg, #e8d8dc 0%, #dcc8cc 100%)'
+}
+
+function loadProjects() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? JSON.parse(raw) : null
-  } catch {
-    return null
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored) return JSON.parse(stored)
+  } catch (e) {
+    console.error('Failed to load projects from localStorage', e)
   }
+  return INITIAL_PROJECTS
 }
 
-function saveToStorage(projects) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))
-  } catch {
-    console.warn('localStorage unavailable')
-  }
-}
-
-// ─── Hook ───────────────────────────────────────────────────
 export function useProjects() {
-  const [projects, setProjects] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [projects, setProjects] = useState(loadProjects)
 
-  // ── Initial load ──────────────────────────────────────────
+  // Persist to localStorage whenever projects change
   useEffect(() => {
-    if (isLocalhost()) {
-      // Try json-server first
-      fetch(API_URL)
-        .then((res) => {
-          if (!res.ok) throw new Error('json-server not running')
-          return res.json()
-        })
-        .then((data) => {
-          setProjects(data)
-          saveToStorage(data)
-        })
-        .catch(() => {
-          // json-server unavailable — fall back to localStorage or defaults
-          const stored = loadFromStorage()
-          setProjects(stored ?? DEFAULT_PROJECTS)
-        })
-        .finally(() => setLoading(false))
-    } else {
-      // Deployed on GitHub Pages — use localStorage, seed defaults if empty
-      const stored = loadFromStorage()
-      if (stored && stored.length > 0) {
-        setProjects(stored)
-      } else {
-        saveToStorage(DEFAULT_PROJECTS)
-        setProjects(DEFAULT_PROJECTS)
-      }
-      setLoading(false)
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(projects))
+    } catch (e) {
+      console.error('Failed to save projects to localStorage', e)
     }
-  }, [])
+  }, [projects])
 
-  // ── Add project ───────────────────────────────────────────
-  const addProject = useCallback(async (projectData) => {
-    const newProject = { ...projectData, id: Date.now() }
-
-    if (isLocalhost()) {
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProject),
-        })
-        if (res.ok) {
-          const saved = await res.json()
-          // Update state + localStorage, then return — do NOT fall through
-          setProjects((prev) => {
-            const updated = [saved, ...prev]
-            saveToStorage(updated)
-            return updated
-          })
-          return saved
-        }
-      } catch {
-        // json-server unavailable — fall through to localStorage save below
-      }
+  const addProject = (newProject) => {
+    const project = {
+      ...newProject,
+      id: Date.now(),
+      year: new Date().getFullYear(),
+      featured: false,
+      emoji: EMOJI_MAP[newProject.category] || '✨',
+      gradient: GRADIENT_MAP[newProject.category] || 'linear-gradient(135deg, #e8e4de 0%, #ddd8d2 100%)'
     }
-
-    // Deployed or server unavailable — save to localStorage only
-    setProjects((prev) => {
-      const updated = [newProject, ...prev]
-      saveToStorage(updated)
-      return updated
-    })
-    return newProject
-  }, [])
-
-  // ── Delete project ────────────────────────────────────────
-  const deleteProject = useCallback(async (id) => {
-    if (isLocalhost()) {
-      try {
-        await fetch(`${API_URL}/${id}`, { method: 'DELETE' })
-      } catch {
-        // json-server unavailable — still remove from local state below
-      }
-    }
-
-    // Always remove from state + localStorage regardless of server response
-    setProjects((prev) => {
-      const updated = prev.filter((p) => p.id !== id)
-      saveToStorage(updated)
-      return updated
-    })
-  }, [])
-
-  // ── Derived values ────────────────────────────────────────
-  const featuredCount = projects.filter((p) => p.featured).length
-  const categoryCount = new Set(projects.map((p) => p.category)).size
-
-  return {
-    projects,
-    loading,
-    error,
-    addProject,
-    deleteProject,
-    featuredCount,
-    categoryCount,
+    setProjects(prev => [...prev, project])
   }
+
+  const deleteProject = (id) => {
+    setProjects(prev => prev.filter(p => p.id !== id))
+  }
+
+  return { projects, categories: CATEGORIES, addProject, deleteProject }
 }
